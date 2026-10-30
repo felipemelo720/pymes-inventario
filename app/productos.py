@@ -146,11 +146,15 @@ def mostrar_resultado(ok, mensaje):
     print(("OK: " if ok else "ERROR: ") + mensaje)
 
 
-def pedir_entero(mensaje):
-    try:
-        return int(input(mensaje).strip())
-    except ValueError:
-        return None
+def pedir_entero(mensaje, por_defecto=None):
+    while True:
+        texto = input(mensaje).strip()
+        if texto == "" and por_defecto is not None:
+            return por_defecto
+        try:
+            return int(texto)
+        except ValueError:
+            print("ERROR: escribe un número entero (ejemplo: 10).")
 
 
 def mostrar_tabla(productos):
@@ -202,11 +206,7 @@ def pantalla_editar():
         nuevo_sku = pedir_texto_o_actual("Código (SKU)", producto[1])
         nuevo_nombre = pedir_texto_o_actual("Nombre", producto[2])
         nueva_categoria = pedir_texto_o_actual("Categoría", producto[3])
-        texto_minimo = pedir_texto_o_actual("Stock mínimo", producto[4])
-        try:
-            nuevo_minimo = int(texto_minimo)
-        except ValueError:
-            nuevo_minimo = None
+        nuevo_minimo = pedir_entero(f"Stock mínimo [{producto[4]}]: ", producto[4])
 
         ok, mensaje = editar_producto(conexion, producto[1], nuevo_sku, nuevo_nombre, nueva_categoria, nuevo_minimo)
     mostrar_resultado(ok, mensaje)
